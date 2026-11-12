@@ -1,0 +1,137 @@
+https://github.com/waveshareteam/roarm_ws
+
+The guide references the link above a lot, so keep it open. We assume you have roarm_m3
+
+This guide only works with clean Ubuntu. If you tried installing roarm_ws before and failed, you will probably have to clean your OS somehow. If you don't know how, just reinstall Ubuntu. Or try this (will only work if you stopped at failing to install dependencies) {
+sudo apt remove --purge '~nros-humble-*' -y
+sudo apt remove --purge ros-dev-tools -y
+sudo rm -f /etc/apt/sources.list.d/ros2.list
+sudo rm -f /usr/share/keyrings/ros-archive-keyring.gpg
+sudo apt autoremove --purge -y
+sudo apt update
+sudo apt clean
+sudo apt update
+
+Then do:
+nano ~/.bashrc
+And remove from the bottom of the file stuff like:
+source /opt/ros/humble/setup.bash
+source ~/ros2_ws/install/setup.bash
+}
+
+Install Ubuntu 22, do not upgrade to 24 after installation. You can update anything else. The installation option "Download updates while installing Ubuntu" will not upgrade your Ubuntu (it is safe)
+
+Update everything you have with the Software Updater (there may be 2 pop-up windows after booting Ubuntu for the 1st time: to upgrade to Ubuntu 24 (don't) and to update other software with Software Update (do))
+
+sudo apt update
+sudo apt upgrade
+sudo apt install git
+
+Set up git. Looks like github no longer allows to just use your account name and password to log in from a console, so we will use a browser (HTTPS):
+sudo apt install gh
+gh auth login
+
+Get into your home directory if you are not there yet, we will clone the repo there:
+git clone https://github.com/waveshareteam/roarm_ws
+
+Dependencies: {
+
+sudo apt install software-properties-common
+sudo add-apt-repository universe
+
+sudo apt update && sudo apt install curl -y
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+
+sudo apt update
+sudo apt upgrade
+
+sudo apt install ros-humble-desktop
+sudo apt install ros-dev-tools
+sudo apt install net-tools
+
+The authos of the reame used:
+# sudo apt install ros-humble-moveit-*
+But it was creating conflicts with these 2 packages:
+# ros-humble-moveit-py
+# ros-humble-moveit-py-dbgsym
+
+So we exclude them (may later have issues with Python, at least we can install dependencies):
+mapfile -t packages < <(apt-cache pkgnames ros-humble-moveit- | sort -u | grep -Ev '^ros-humble-moveit-py(-dbgsym)?$')
+sudo apt install "${packages[@]}"
+
+This crap here could also cause errors, so we don't run it:
+# sudo apt remove ros-humble-moveit-servo-*
+
+sudo apt install ros-humble-generate-parameter-library
+sudo apt install ros-humble-py-binding-tools
+
+}
+
+grep -qxF 'source /opt/ros/humble/setup.bash' ~/.bashrc ||
+echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc
+source ~/.bashrc
+
+The read me authors don't like virtual environments, I guess. So get into ~/roarm_ws and run:
+sudo apt install python3-pip
+pip install -r requirements.txt
+
+The readme authors expect us to have their Ubuntu username (who even hired them?), so take over control from here (run the entire block at once) {
+
+cd ~/roarm_ws || exit 1
+
+set -e
+
+source /opt/ros/humble/setup.bash
+
+colcon build --packages-select roarm_msgs
+source install/setup.bash
+
+colcon build --packages-select moveit_servo
+source install/setup.bash
+
+colcon build --packages-select rviz_marker_tools
+source install/setup.bash
+
+colcon build --packages-select moveit_task_constructor_msgs
+source install/setup.bash
+
+colcon build --packages-select moveit_task_constructor_core
+source install/setup.bash
+
+colcon build --packages-select moveit_task_constructor_capabilities
+source install/setup.bash
+
+colcon build --packages-select moveit_task_constructor_visualization
+source install/setup.bash
+
+colcon build --packages-select roarm_moveit_cmd
+source install/setup.bash
+
+colcon build --packages-select roarm_moveit_ikfast_plugins
+source install/setup.bash
+
+colcon build --packages-select roarm_moveit_mtc_demo
+source install/setup.bash
+
+colcon build --packages-select roarm_moveit_servo
+source install/setup.bash
+
+colcon build --packages-select roarm_description roarm_driver roarm_moveit --symlink-install
+source install/setup.bash
+
+grep -qxF 'source /opt/ros/humble/setup.bash' ~/.bashrc ||
+echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc
+
+grep -qxF 'source ~/roarm_ws/install/setup.bash' ~/.bashrc ||
+echo 'source ~/roarm_ws/install/setup.bash' >> ~/.bashrc
+
+source ~/.bashrc
+}
+
+grep -qxF 'export ROARM_MODEL=roarm_m3' ~/.bashrc ||
+echo 'export ROARM_MODEL=roarm_m3' >> ~/.bashrc
+source ~/.bashrc
+
+Installation looks finished. Remember that we did not install ros-humble-moveit-py and ros-humble-moveit-py-dbgsym because of conflicts (in case something Pythony breaks in the future)
+
+Section 4 can occasionally break in different ways, but it is not very important, so you can skip it. You can skip to sections 7 and 8
