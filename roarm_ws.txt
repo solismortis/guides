@@ -1,3 +1,5 @@
+WARNING. As of 22.11.26 the main branch had no updates for a year. You are probably more interested in the develop branch.
+
 https://github.com/waveshareteam/roarm_ws
 
 The guide references the link above a lot, so keep it open. We assume you have roarm_m3
