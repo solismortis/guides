@@ -1,5 +1,7 @@
 WARNING. As of 22.11.26 the main branch had no updates for a year. You are probably more interested in the develop branch.
 
+THE FILE IS NO LONGER UPDATED, FOLLOW https://github.com/solismortis/guides/blob/main/roarm_ws_develop_branch_installation.txt
+
 https://github.com/waveshareteam/roarm_ws
 
 The guide references the link above a lot, so keep it open. We assume you have roarm_m3
