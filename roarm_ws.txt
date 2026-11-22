@@ -4,7 +4,8 @@ https://github.com/waveshareteam/roarm_ws
 
 The guide references the link above a lot, so keep it open. We assume you have roarm_m3
 
-This guide only works with clean Ubuntu. If you tried installing roarm_ws before and failed, you will probably have to clean your OS somehow. If you don't know how, just reinstall Ubuntu. Or try this (will only work if you stopped at failing to install dependencies) {
+This guide only works with clean Ubuntu. If you tried installing roarm_ws before and failed, you will probably have to clean your OS somehow. If you don't know how, just reinstall Ubuntu. Or try this (will only work if you stopped at failing to install dependencies)
+{
 sudo apt remove --purge '~nros-humble-*' -y
 sudo apt remove --purge ros-dev-tools -y
 sudo rm -f /etc/apt/sources.list.d/ros2.list
@@ -13,6 +14,11 @@ sudo apt autoremove --purge -y
 sudo apt update
 sudo apt clean
 sudo apt update
+sudo rm -f /etc/apt/sources.list.d/ros2.sources
+sudo rm -f /etc/apt/sources.list.d/ros2.list
+sudo apt update
+sudo apt purge ros2-apt-source -y
+sudo apt autoremove --purge -y
 
 Then do:
 nano ~/.bashrc
