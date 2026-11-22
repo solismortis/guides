@@ -1,0 +1,74 @@
+https://github.com/waveshareteam/roarm_ws/blob/ros2-humble-develop-251125/docs/installation.md#ros-workspace-setup
+
+You probably have the previous version installed, we will have to purge it in the next block
+
+WARNING: This will delete your ~/roarm_ws folder
+{
+sudo apt remove --purge '~nros-humble-*' -y
+sudo apt remove --purge ros-dev-tools -y
+sudo rm -f /etc/apt/sources.list.d/ros2.list
+sudo rm -f /usr/share/keyrings/ros-archive-keyring.gpg
+sudo apt autoremove --purge -y
+sudo apt update
+sudo apt clean
+sudo apt update
+sudo rm -f /etc/apt/sources.list.d/ros2.sources
+sudo rm -f /etc/apt/sources.list.d/ros2.list
+sudo apt update
+sudo apt purge ros2-apt-source -y
+sudo apt autoremove --purge -y
+rm -rf ~/roarm_ws
+
+Then do:
+nano ~/.bashrc
+And remove from the bottom of the file stuff like:
+source /opt/ros/humble/setup.bash
+source ~/ros2_ws/install/setup.bash
+}
+
+cd ~/
+sudo apt update
+sudo apt upgrade
+sudo apt install -y git
+git clone -b ros2-humble-develop-251125 https://github.com/waveshareteam/roarm_ws.git
+cd roarm_ws
+
+{
+sudo apt install software-properties-common
+sudo add-apt-repository universe
+
+sudo apt update && sudo apt install curl -y
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
+  -o /usr/share/keyrings/ros-archive-keyring.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] \
+http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" \
+| sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+sudo apt update
+}
+
+Modify build_first.sh in the roarm_ws folder:
+Change "/ws" in "WS=/home/ws/roarm_ws" to "/<your username>"
+
+echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc
+source ~/.bashrc
+
+# The devs forgot a package or something...
+sed -i '/ros-humble-ros2-control \\/i\  ros-humble-rosidl-default-generators \\' build_first.sh
+
+# After you run the next 3 commands, answer according to choices provided below
+cd ~/roarm_ws
+sudo chmod +x build_first.sh
+bash build_first.sh  # The devs made a mistake here by running with sudo
+
+> Python: y
+> Gazebo: 1
+> Roarm: 2
+> Gripper: 1
+> Save model: y
+
+While building there will be some errors. Ignore
+
+Test installation:
+ros2 launch roarm_description display.launch.py use_rviz:=true
