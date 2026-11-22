@@ -72,3 +72,14 @@ While building there will be some errors. Ignore
 
 Test installation:
 ros2 launch roarm_description display.launch.py use_rviz:=true
+
+There could be issues with locales (especially if you are from a country that uses commas for decimals, like Russia). You may want to run ros2 like this:
+LC_NUMERIC=C ros2 ...
+
+Test with Gazebo:
+LC_NUMERIC=C ros2 launch roarm_gazebo moveit_gazebo.launch.py use_rviz:=true
+
+Or you can update your system to use points for decimals:
+sudo update-locale LC_NUMERIC=C
+
+Then reboot
